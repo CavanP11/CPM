@@ -1,6 +1,6 @@
 # Password Manager
 
-A secure and user-friendly password manager built with Python. This project uses encryption to protect sensitive information and stores data securely in a local database. The application features a modular design, separating the encryption, database management, and user interface functionalities.
+WIP
 
 ## Table of Contents
 1. [Brainstorm](#Brainstorm)
@@ -13,3 +13,11 @@ This is my brainstorm, I will update into a proper ReadMe when I can be arsed
 - Want options for which algorithms to use // Quantum?
 - Generate passwords // Select length // Select if to use special chars?
 - Have small CPM logo // Tested this in Python UI and I fucked up and stopped
+- Password searching
+- Something like a vault feature from ProtonPass
+- Backup / Restore
+- Browser extension // Autofill?
+- Check password breaches?
+- CLipboard // Click to copy passwords
+- QR code passwords??
+- AI? // EVENTUALLY
