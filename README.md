@@ -21,3 +21,4 @@ This is my brainstorm, I will update into a proper ReadMe when I can be arsed
 - CLipboard // Click to copy passwords
 - QR code passwords??
 - AI? // EVENTUALLY
+- Add master password
