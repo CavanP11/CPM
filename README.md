@@ -22,3 +22,4 @@ This is my brainstorm, I will update into a proper ReadMe when I can be arsed
 - QR code passwords??
 - AI? // EVENTUALLY
 - Add master password // Better salt storage
+- Added basic GUI // Adding password now loops infinite :))))))))
