@@ -1,20 +1,34 @@
-from cryptography.fernet import Fernet
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from cryptography.hazmat.primitives.hashes import SHA256
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
+import base64
+import os
 
-# Generate and load the encryption key
-def generate_key():
-    key = Fernet.generate_key()
-    with open("key.key", "wb") as key_file:
-        key_file.write(key)
+# Derive a key from the master password and salt
+def derive_key(password, salt):
+    kdf = PBKDF2HMAC(
+        algorithm=SHA256(),
+        length=32,
+        salt=salt,
+        iterations=100_000,
+        backend=default_backend()
+    )
+    return base64.urlsafe_b64encode(kdf.derive(password.encode()))
 
-def load_key():
-    with open("key.key", "rb") as key_file:
-        return key_file.read()
-
-# Encrypt and decrypt functions
+# Encrypt data using the derived key
 def encrypt_data(data, key):
-    fernet = Fernet(key)
-    return fernet.encrypt(data.encode())
+    iv = os.urandom(16)  # AES requires a 16-byte initialization vector (IV)
+    cipher = Cipher(algorithms.AES(key), modes.CFB(iv), backend=default_backend())
+    encryptor = cipher.encryptor()
+    ciphertext = encryptor.update(data.encode()) + encryptor.finalize()
+    return base64.urlsafe_b64encode(iv + ciphertext)  # Combine IV and ciphertext
 
+# Decrypt data using the derived key
 def decrypt_data(encrypted_data, key):
-    fernet = Fernet(key)
-    return fernet.decrypt(encrypted_data).decode()
+    encrypted_data = base64.urlsafe_b64decode(encrypted_data)
+    iv = encrypted_data[:16]  # Extract IV
+    ciphertext = encrypted_data[16:]  # Extract ciphertext
+    cipher = Cipher(algorithms.AES(key), modes.CFB(iv), backend=default_backend())
+    decryptor = cipher.decryptor()
+    return (decryptor.update(ciphertext) + decryptor.finalize()).decode()

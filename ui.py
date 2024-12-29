@@ -8,26 +8,24 @@ def display_menu():
     print("3. Delete Password")
     print("4. Exit")
 
-def add_password():
+def add_password(key):
     service = input("Enter the service name: ")
     username = input("Enter the username: ")
     password = input("Enter the password: ")
 
-    key = encryption.load_key()
     encrypted_password = encryption.encrypt_data(password, key)
     database.add_password(service, username, encrypted_password)
     print("Password added successfully!")
 
-def retrieve_password():
+def retrieve_password(key):
     service = input("Enter the service name: ")
-    key = encryption.load_key()
     result = database.get_password(service)
     if result:
         username, encrypted_password = result
-        password = encryption.decrypt_data(encrypted_password, key)
+        decrypted_password = encryption.decrypt_data(encrypted_password, key)
         print(f"Service: {service}")
         print(f"Username: {username}")
-        print(f"Password: {password}")
+        print(f"Password: {decrypted_password}")
     else:
         print("Service not found.")
 
