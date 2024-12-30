@@ -16,7 +16,7 @@ def initialize_database():
         )
     """)
 
-    # Create table for metadata (e.g., salt)
+    # Create table for metadata (e.g., salt, master password hash)
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS metadata (
             key TEXT PRIMARY KEY,
@@ -45,6 +45,23 @@ def get_salt():
         return bytes.fromhex(result[0])
     else:
         raise ValueError("Salt not found in the database.")
+
+# Store the master password hash
+def store_master_password_hash(password_hash):
+    conn = sqlite3.connect("passwords.db")
+    cursor = conn.cursor()
+    cursor.execute("INSERT OR REPLACE INTO metadata (key, value) VALUES (?, ?)", ("master_password_hash", password_hash))
+    conn.commit()
+    conn.close()
+
+# Retrieve the master password hash
+def get_master_password_hash():
+    conn = sqlite3.connect("passwords.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT value FROM metadata WHERE key='master_password_hash'")
+    result = cursor.fetchone()
+    conn.close()
+    return result[0] if result else None
 
 # Add a password entry
 def add_password(service, username, password):
@@ -77,3 +94,12 @@ def delete_password(service):
     """, (service,))
     conn.commit()
     conn.close()
+
+# Fetch all stored passwords
+def get_passwords():
+    conn = sqlite3.connect("passwords.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT service, username, password FROM passwords")
+    results = cursor.fetchall()
+    conn.close()
+    return results

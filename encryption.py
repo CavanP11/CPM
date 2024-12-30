@@ -9,12 +9,12 @@ import os
 def derive_key(password, salt):
     kdf = PBKDF2HMAC(
         algorithm=SHA256(),
-        length=32,
+        length=32,  # 32 bytes for AES-256
         salt=salt,
         iterations=100_000,
         backend=default_backend()
     )
-    return base64.urlsafe_b64encode(kdf.derive(password.encode()))
+    return kdf.derive(password.encode())  # Return raw bytes
 
 # Encrypt data using the derived key
 def encrypt_data(data, key):
